@@ -1,0 +1,12 @@
+Step awal saat ingin membuat project menggunakan go
+
+1. buat folder projek baru, lalu ketik go mod init "nama projek"
+
+lalu install gin gonic untuk protocol framework httpnya
+go get -u github.com/gin-gonic/gin
+
+lalu install gorm untuk koneksi database
+go get -u gorm.io/gorm
+go get -u gorm.io/driver/mysql -> sesuaikan dengan database yang akan dipakai
+
+lalu buat file baru dengan nama main.go
