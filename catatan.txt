@@ -10,3 +10,7 @@ go get -u gorm.io/gorm
 go get -u gorm.io/driver/mysql -> sesuaikan dengan database yang akan dipakai
 
 lalu buat file baru dengan nama main.go
+
+pola
+
+repository -> service -> input -> handler
