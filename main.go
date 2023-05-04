@@ -21,6 +21,19 @@ func main() {
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
 
+	// emailInput := user.CheckEmailInput{
+	// 	Email: "leansdro@arsenal.com",
+	// }
+
+	// user, err := userService.IsEmailAvailable(emailInput)
+
+	// if err != nil {
+	// 	fmt.Println("Oop email sudah terdaftar")
+	// 	fmt.Println(err.Error())
+	// }
+
+	// fmt.Println(user)
+
 	// input := user.LoginInput{
 	// 	Email:    "leandro@arsenal.com",
 	// 	Password: "passworsd",
@@ -57,6 +70,8 @@ func main() {
 
 	api.POST("/users", userHandler.RegisterUser)
 	api.POST("/sessions", userHandler.Login)
+	api.GET("users/fetch", userHandler.FetchUser)
+	api.POST("email_checkers", userHandler.CheckEmailAvailability)
 
 	router.Run()
 	// user := user.User{

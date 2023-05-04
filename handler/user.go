@@ -119,3 +119,77 @@ func (handler *userHandler) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 
 }
+
+func (handler *userHandler) CheckEmailAvailability(c *gin.Context) {
+	var input user.CheckEmailInput
+
+	err := c.ShouldBindJSON(&input)
+
+	if err != nil {
+		errors := helper.FormatValidationError(err)
+
+		errorMessage := gin.H{"errors": errors}
+
+		response := helper.APIResponse(
+			"Oops, your email already taken!",
+			http.StatusUnprocessableEntity,
+			"error",
+			errorMessage,
+		)
+
+		c.JSON(http.StatusUnprocessableEntity, response)
+
+		return
+	}
+
+	isEmailAvailable, err := handler.userService.IsEmailAvailable(input)
+
+	if err != nil {
+
+		errorMessage := gin.H{"errors": "Something Missing"}
+		response := helper.APIResponse(
+			"Oops, your email already taken!",
+			http.StatusUnprocessableEntity,
+			"error",
+			errorMessage,
+		)
+
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	data := gin.H{
+		"is_available": isEmailAvailable,
+	}
+
+	var metaMessage string
+
+	if isEmailAvailable {
+		metaMessage = "Congratulation! your email is avaliable"
+	} else {
+		metaMessage = "Email is already taken!"
+	}
+
+	response := helper.APIResponse(
+		metaMessage,
+		http.StatusOK,
+		"success",
+		data,
+	)
+
+	c.JSON(http.StatusOK, response)
+
+}
+
+func (handler *userHandler) FetchUser(c *gin.Context) {
+	currentUser := c.MustGet("currentYser").(user.User)
+	formatter := user.FormatUser(currentUser, "")
+	response := helper.APIResponse(
+		"Successfuly fetch user data",
+		http.StatusOK,
+		"success",
+		formatter,
+	)
+
+	c.JSON(http.StatusOK, response)
+}
