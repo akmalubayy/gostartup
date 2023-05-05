@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"errors"
 	"log"
 	"os"
 	"time"
@@ -11,6 +12,7 @@ import (
 
 type Service interface {
 	GenerateToken(userID int) (string, error)
+	ValidateToken(token string) (*jwt.Token, error)
 }
 
 type jwtService struct {
@@ -52,4 +54,30 @@ func (s *jwtService) GenerateToken(UserID int) (string, error) {
 
 	return signedToken, nil
 
+}
+
+func (s *jwtService) ValidateToken(token string) (*jwt.Token, error) {
+
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
+
+	secKey := os.Getenv("SECRET_KEY")
+
+	tokenJWT, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+		_, ok := token.Method.(*jwt.SigningMethodHMAC)
+
+		if !ok {
+			return nil, errors.New("Invalid Token")
+		}
+
+		return []byte(secKey), nil
+	})
+
+	if err != nil {
+		return tokenJWT, err
+	}
+
+	return tokenJWT, nil
 }

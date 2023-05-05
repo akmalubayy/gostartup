@@ -84,6 +84,30 @@ func main() {
 
 	userHandler := handler.NewUserHandler(userService)
 
+	token, err := authService.ValidateToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODMyNzE3NTksInVzZXJfaWQiOjJ9.qAOwfwFAZ-2c7bZtoBFIIzBBXutW6rWoSnM3VjI6HP0")
+
+	if err != nil {
+		fmt.Println("ERROR")
+		fmt.Println("ERROR")
+		fmt.Println("ERROR")
+		fmt.Println("ERROR")
+		fmt.Println("ERROR")
+	}
+
+	if token.Valid {
+		fmt.Println("VALID")
+		fmt.Println("VALID")
+		fmt.Println("VALID")
+		fmt.Println("VALID")
+		fmt.Println("VALID")
+	} else {
+		fmt.Println("INVALID")
+		fmt.Println("INVALID")
+		fmt.Println("INVALID")
+		fmt.Println("INVALID")
+		fmt.Println("INVALID")
+	}
+
 	router := gin.Default()
 
 	api := router.Group("api/v1")
