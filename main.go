@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gostartup/auth"
 	"gostartup/handler"
 	"gostartup/user"
 	"log"
@@ -18,9 +19,15 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
+	// memanggil db model repositor
 	userRepository := user.NewRepository(db)
+
+	// memanggil service
 	userService := user.NewService(userRepository)
-	userHandler := handler.NewUserHandler(userService)
+	authService := auth.NewService()
+
+	// Handler atau controller logic
+	userHandler := handler.NewUserHandler(userService, authService)
 
 	router := gin.Default()
 	api := router.Group("api/v1")

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"gostartup/auth"
 	"gostartup/helper"
 	"gostartup/user"
 	"net/http"
@@ -11,10 +12,14 @@ import (
 
 type userHandler struct {
 	userService user.Service
+	authService auth.Service
 }
 
-func NewUserHandler(userService user.Service) *userHandler {
-	return &userHandler{userService}
+func NewUserHandler(userService user.Service, authService auth.Service) *userHandler {
+	return &userHandler{
+		userService,
+		authService,
+	}
 }
 
 func (handler *userHandler) RegisterUser(c *gin.Context) {
@@ -54,7 +59,21 @@ func (handler *userHandler) RegisterUser(c *gin.Context) {
 		return
 	}
 
-	formatter := user.FormatUser(NewUser, "tokenJWT")
+	token, err := handler.authService.GenerateToken(NewUser.ID)
+
+	if err != nil {
+		response := helper.APIResponse(
+			"Your token is invalid",
+			http.StatusBadRequest,
+			"error",
+			nil,
+		)
+
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	formatter := user.FormatUser(NewUser, token)
 
 	response := helper.APIResponse(
 		"Account has been registered",
@@ -103,12 +122,27 @@ func (handler *userHandler) Login(c *gin.Context) {
 			errorMessage,
 		)
 
+		c.JSON(http.StatusBadRequest, response)
+
+		return
+	}
+
+	token, err := handler.authService.GenerateToken(loggedinUser.ID)
+
+	if err != nil {
+		response := helper.APIResponse(
+			"User Login Failed",
+			http.StatusBadRequest,
+			"error",
+			nil,
+		)
+
 		c.JSON(http.StatusUnprocessableEntity, response)
 
 		return
 	}
 
-	formatter := user.FormatUser(loggedinUser, "tokenJWT")
+	formatter := user.FormatUser(loggedinUser, token)
 
 	response := helper.APIResponse(
 		"User Login Success, Welcome"+" "+loggedinUser.Name,
