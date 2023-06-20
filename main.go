@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"gostartup/auth"
 	"gostartup/campaign"
 	"gostartup/handler"
@@ -34,20 +33,25 @@ func main() {
 	campaignService := campaign.NewService(campaignRepository)
 	authService := auth.NewService()
 
-	campaigns, _ := campaignService.FindCampaigns(0)
+	// campaigns, _ := campaignService.GetCampaigns(0)
 
-	fmt.Println(len(campaigns))
+	// fmt.Println(len(campaigns))
 
 	// Handler atau controller logic
 	userHandler := handler.NewUserHandler(userService, authService)
+	campaignHandler := handler.NewCampaignHandler(campaignService)
 
 	router := gin.Default()
 	api := router.Group("api/v1")
 
+	// POST
 	api.POST("/users", userHandler.RegisterUser)
 	api.POST("/sessions", userHandler.Login)
 	api.POST("/email_checkers", userHandler.CheckEmailAvailability)
 	api.POST("/avatars", authMiddleware(authService, userService), userHandler.UploadAvatar)
+
+	// GET
+	api.GET("/campaigns", campaignHandler.GetCampaigns)
 
 	// api.GET("/users/fetch", userHandler.FetchUser)
 
