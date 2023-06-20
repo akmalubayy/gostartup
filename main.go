@@ -29,27 +29,14 @@ func main() {
 	userRepository := user.NewRepository(db)
 	campaignRepository := campaign.NewRepository(db)
 
-	campaigns, _ := campaignRepository.FindAll()
-
-	fmt.Println("check")
-	fmt.Println("check")
-	fmt.Println("check")
-	fmt.Println(len(campaigns))
-	for _, campaign := range campaigns {
-		fmt.Println(campaign.Name)
-
-		if len(campaign.CampaignImages) > 0 {
-			fmt.Println("Jumlah image")
-			fmt.Println(len(campaign.CampaignImages))
-			fmt.Println(campaign.CampaignImages[0].FileName)
-		}
-
-	}
-	fmt.Println()
-
 	// memanggil service
 	userService := user.NewService(userRepository)
+	campaignService := campaign.NewService(campaignRepository)
 	authService := auth.NewService()
+
+	campaigns, _ := campaignService.FindCampaigns(0)
+
+	fmt.Println(len(campaigns))
 
 	// Handler atau controller logic
 	userHandler := handler.NewUserHandler(userService, authService)
