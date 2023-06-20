@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"gostartup/auth"
+	"gostartup/campaign"
 	"gostartup/handler"
 	"gostartup/helper"
 	"gostartup/user"
@@ -25,6 +27,25 @@ func main() {
 
 	// memanggil db model repositor
 	userRepository := user.NewRepository(db)
+	campaignRepository := campaign.NewRepository(db)
+
+	campaigns, _ := campaignRepository.FindAll()
+
+	fmt.Println("check")
+	fmt.Println("check")
+	fmt.Println("check")
+	fmt.Println(len(campaigns))
+	for _, campaign := range campaigns {
+		fmt.Println(campaign.Name)
+
+		if len(campaign.CampaignImages) > 0 {
+			fmt.Println("Jumlah image")
+			fmt.Println(len(campaign.CampaignImages))
+			fmt.Println(campaign.CampaignImages[0].FileName)
+		}
+
+	}
+	fmt.Println()
 
 	// memanggil service
 	userService := user.NewService(userRepository)
@@ -40,6 +61,7 @@ func main() {
 	api.POST("/sessions", userHandler.Login)
 	api.POST("/email_checkers", userHandler.CheckEmailAvailability)
 	api.POST("/avatars", authMiddleware(authService, userService), userHandler.UploadAvatar)
+
 	// api.GET("/users/fetch", userHandler.FetchUser)
 
 	router.Run()
