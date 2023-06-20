@@ -42,6 +42,7 @@ func main() {
 	campaignHandler := handler.NewCampaignHandler(campaignService)
 
 	router := gin.Default()
+	router.Static("/images", "./images/avatar")
 	api := router.Group("api/v1")
 
 	// POST
