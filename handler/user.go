@@ -291,7 +291,7 @@ func (handler *userHandler) UploadAvatar(c *gin.Context) {
 }
 
 func (handler *userHandler) FetchUser(c *gin.Context) {
-	currentUser := c.MustGet("currentYser").(user.User)
+	currentUser := c.MustGet("currentUser").(user.User)
 	formatter := user.FormatUser(currentUser, "")
 	response := helper.APIResponse(
 		"Successfuly fetch user data",

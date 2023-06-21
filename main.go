@@ -53,6 +53,7 @@ func main() {
 
 	// GET
 	api.GET("/campaigns", campaignHandler.GetCampaigns)
+	api.GET("/campaigns/:id", campaignHandler.GetCampaign)
 
 	// api.GET("/users/fetch", userHandler.FetchUser)
 
