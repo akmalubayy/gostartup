@@ -30,3 +30,13 @@ type CampaignImage struct {
 	CreatedAt  time.Time
 	updatedAt  time.Time
 }
+
+// type CampaignImage struct {
+// 	ID         int
+// 	UserID     user.User
+// 	CampaignID int
+// 	FileName   string
+// 	IsPrimary  int
+// 	CreatedAt  time.Time
+// 	updatedAt  time.Time
+// }

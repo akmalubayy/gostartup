@@ -3,6 +3,7 @@ package handler
 import (
 	"gostartup/campaign"
 	"gostartup/helper"
+	"gostartup/user"
 	"net/http"
 	"strconv"
 
@@ -95,4 +96,55 @@ func (handler *campaignHandler) GetCampaign(c *gin.Context) {
 	)
 
 	c.JSON(http.StatusOK, response)
+}
+
+func (handler *campaignHandler) CreateCampaign(c *gin.Context) {
+	var input campaign.CreateCampaignInput
+
+	err := c.ShouldBindJSON(&input)
+
+	if err != nil {
+		errors := helper.FormatValidationError(err)
+
+		errorMessage := gin.H{"errors": errors}
+
+		response := helper.APIResponse(
+			"Opss, Something Wrong, Failed Create Campaign",
+			http.StatusBadRequest,
+			"error",
+			errorMessage,
+		)
+
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	currentUser := c.MustGet("currentUser").(user.User)
+
+	input.User = currentUser
+
+	newCampaign, err := handler.service.CreateCampaign(input)
+
+	if err != nil {
+
+		response := helper.APIResponse(
+			"Opss, Something Wrong, Failed Create Campaign",
+			http.StatusBadRequest,
+			"error",
+			nil,
+		)
+
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	response := helper.APIResponse(
+		"Create Campaign Succesfuly",
+		http.StatusOK,
+		"success",
+		campaign.FormatCampaign(newCampaign),
+	)
+
+	c.JSON(http.StatusOK, response)
+
 }
