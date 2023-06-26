@@ -180,7 +180,7 @@ func (handler *campaignHandler) UpdateCampaign(c *gin.Context) {
 		errorMessage := gin.H{"errors": errors}
 
 		response := helper.APIResponse(
-			"Opss, Something Wrong, Failed Update Campaign",
+			"Opss, Something Wrong, Failed Update Campaign Image",
 			http.StatusBadRequest,
 			"error",
 			errorMessage,
