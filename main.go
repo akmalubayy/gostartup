@@ -5,6 +5,7 @@ import (
 	"gostartup/campaign"
 	"gostartup/handler"
 	"gostartup/helper"
+	"gostartup/transaction"
 	"gostartup/user"
 	"log"
 	"net/http"
@@ -27,11 +28,13 @@ func main() {
 	// memanggil db model repositor
 	userRepository := user.NewRepository(db)
 	campaignRepository := campaign.NewRepository(db)
+	transactionRepository := transaction.NewRepository(db)
 
 	// memanggil service
 	userService := user.NewService(userRepository)
 	campaignService := campaign.NewService(campaignRepository)
 	authService := auth.NewService()
+	transactionService := transaction.NewService(transactionRepository, campaignRepository)
 
 	// Test fungsi
 	// input := campaign.CreateCampaignInput{}
@@ -58,6 +61,7 @@ func main() {
 	// Handler atau controller logic
 	userHandler := handler.NewUserHandler(userService, authService)
 	campaignHandler := handler.NewCampaignHandler(campaignService)
+	transactionHandler := handler.NewTransactionHandler(transactionService)
 
 	router := gin.Default()
 	router.Static("/images", "./images/avatar")
@@ -77,6 +81,8 @@ func main() {
 	// GET
 	api.GET("/campaigns", campaignHandler.GetCampaigns)
 	api.GET("/campaigns/:id", campaignHandler.GetCampaign)
+	api.GET("/campaigns/:id/transactions", authMiddleware(authService, userService), transactionHandler.GetCampaignTransactions)
+	api.GET("/transactions", authMiddleware(authService, userService), transactionHandler.GetUserTrancastions)
 
 	// api.GET("/users/fetch", userHandler.FetchUser)
 

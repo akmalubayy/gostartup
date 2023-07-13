@@ -1,5 +1,11 @@
 package transaction
 
+import (
+	"gostartup/campaign"
+	"gostartup/user"
+	"time"
+)
+
 type Transaction struct {
 	ID         int
 	CampaignID int
@@ -7,4 +13,8 @@ type Transaction struct {
 	Amount     int
 	Status     string
 	Code       string
+	User       user.User
+	Campaign   campaign.Campaign
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
